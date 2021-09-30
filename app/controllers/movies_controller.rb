@@ -8,6 +8,19 @@ class MoviesController < ApplicationController
   
     def index
       @movies = Movie.all
+      @all_ratings = @movies.each {|movie| movie.rating}
+      
+      def sort_column
+        Movie.column_names.include?(params[:sort]) ? params[:sort] : "title"
+      end
+      
+      def sort_direction
+        %w[ASC DESC].include?(params[:direction]) ? params[:direction] : "ASC"
+      end
+      
+      # I am not fully understand the parameters of the order method 
+      @movies = @movies.order(sort_column + ' ' + sort_direction)  
+      
     end
   
     def new
