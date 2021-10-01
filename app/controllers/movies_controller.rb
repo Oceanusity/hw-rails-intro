@@ -33,7 +33,7 @@ class MoviesController < ApplicationController
 
       # byebug
       # flash.keep
-      # redirect_to movies_path and return
+      redirect_to movies_path(:ratings => params[:ratings], :sort => params[:sort]) and return
       
       def sort_column
         Movie.column_names.include?(params[:sort]) ? params[:sort] : "title"
