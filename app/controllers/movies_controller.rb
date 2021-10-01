@@ -19,10 +19,17 @@ class MoviesController < ApplicationController
         session[:direction] = params[:direction]
       end
       
+      if !session.has_key?(:ratings)
+        session[:ratings] = @all_ratings.each_with_object({}) {|rating, h| h[rating] = '1'}
+      end
+      
       params[:ratings] = session[:ratings]
       params[:direction] = session[:direction]
       params[:sort] = session[:sort]
 
+      # flash.keep
+      # redirect_to movies_path(:ratings => params[:ratings], :sort => params[:sort]) and return
+      
       @movies = Movie.all
       # load the @all_ratings from the movie class every time
       @all_ratings = Movie.all_ratings
