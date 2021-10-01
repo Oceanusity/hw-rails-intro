@@ -7400,6 +7400,7 @@ Processing by MoviesController#index as HTML
 {"G"=>"1", "PG-13"=>"1", "R"=>"1"}   ||   title
 Redirected to https://c23b6683ad244631a2092bf0d6434d60.vfs.cloud9.us-east-2.amazonaws.com/movies?ratings%5BG%5D=1&ratings%5BPG-13%5D=1&ratings%5BR%5D=1&sort=title
 Completed 302 Found in 4ms (ActiveRecord: 0.0ms)
+<<<<<<< HEAD
 
 
 Started GET "/" for 50.231.141.125 at 2021-10-01 05:00:55 +0000
@@ -10031,3 +10032,5 @@ Processing by MoviesController#index as HTML
   [1m[35mMovie Load (0.2ms)[0m  SELECT "movies".* FROM "movies"
 Redirected to https://c23b6683ad244631a2092bf0d6434d60.vfs.cloud9.us-east-2.amazonaws.com/movies?ratings%5BG%5D=1&ratings%5BPG%5D=1&ratings%5BPG-13%5D=1&ratings%5BR%5D=1&sort=release_date
 Completed 302 Found in 3ms (ActiveRecord: 0.2ms)
+=======
+>>>>>>> a892063bfe62318700c24a258e92fd4d19c542d5
