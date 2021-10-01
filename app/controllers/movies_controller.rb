@@ -7,26 +7,25 @@ class MoviesController < ApplicationController
     end
   
     def index
-      
-      # replace these code refreshing same method 
-      if params[:ratings] != session[:ratings] and params[:rating] != :nil
+      if params[:ratings]
         session[:ratings] = params[:ratings]
       end
-      if params[:sort] != session[:sort] and params[:sort] != :nil
+
+      if params[:sort]
         session[:sort] = params[:sort]
       end
-      if params[:direction] != session[:direction] and params[:direction] != :nil
+      
+      if params[:direction]
         session[:direction] = params[:direction]
       end
       
       params[:ratings] = session[:ratings]
       params[:direction] = session[:direction]
       params[:sort] = session[:sort]
-      #
-      
+
       @movies = Movie.all
       # load the @all_ratings from the movie class every time
-      @all_ratings = @movies.map(&:rating).uniq
+      @all_ratings = Movie.all_ratings
       
       def sort_column
         Movie.column_names.include?(params[:sort]) ? params[:sort] : "title"
@@ -36,15 +35,16 @@ class MoviesController < ApplicationController
         %w[ASC DESC].include?(params[:direction]) ? params[:direction] : "ASC"
       end
       
-      if params[:ratings]
-        @fliter_keys = params[:ratings].keys
-        @movies = @movies.where('rating in (?)', @fliter_keys)
+      if session[:ratings]
+        @fliter_keys = session[:ratings].keys
+        @movies = Movie.with_ratings(@fliter_keys)
         # strange not work?
         # @movies = @movies.select { |movie| @filted_rating.include?movie.rating}
       end
 
       # I am not fully understand the parameters of the order method 
       @movies = @movies.order(sort_column + ' ' + sort_direction)
+      
       if sort_column == "title"
         @sort_title = "p-3 mb-2 bg-warning text-dark hlite"
       elsif sort_column == "release_date"
