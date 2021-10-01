@@ -8,7 +8,8 @@ class MoviesController < ApplicationController
   
     def index
       @movies = Movie.all
-      @all_ratings = @movies.each {|movie| movie.rating}
+      # load the @all_ratings from the movie class every time
+      @all_ratings = @movies.map(&:rating).uniq
       
       def sort_column
         Movie.column_names.include?(params[:sort]) ? params[:sort] : "title"
@@ -18,6 +19,13 @@ class MoviesController < ApplicationController
         %w[ASC DESC].include?(params[:direction]) ? params[:direction] : "ASC"
       end
       
+      if params[:ratings]
+        @fliter_keys = params[:ratings].keys
+        @movies = @movies.where('rating in (?)', @fliter_keys)
+        # strange not work?
+        # @movies = @movies.select { |movie| movie.rating in @filted_rating }
+      end
+
       # I am not fully understand the parameters of the order method 
       @movies = @movies.order(sort_column + ' ' + sort_direction)  
       
