@@ -10,30 +10,31 @@ class MoviesController < ApplicationController
       @movies = Movie.all
       # load the @all_ratings from the movie class every time
       @all_ratings = Movie.all_ratings
-      
-      if params[:ratings]
+
+      if params.has_key?(:ratings) and params.has_key?(:sort)
         session[:ratings] = params[:ratings]
-      end
-
-      if params[:sort]
         session[:sort] = params[:sort]
-      end
-      
-      if params[:direction]
-        session[:direction] = params[:direction]
-      end
-      
-      if !session.has_key?(:ratings)
-        session[:ratings] = @all_ratings.each_with_object({}) {|rating, h| h[rating] = '1'}
-      end
-      
-      params[:ratings] = session[:ratings]
-      params[:direction] = session[:direction]
-      params[:sort] = session[:sort]
+      else
 
-      # byebug
-      # flash.keep
-      redirect_to movies_path(:ratings => params[:ratings], :sort => params[:sort]) and return
+        if !params.has_key?(:ratings)
+          params[:ratings] = session[:ratings]
+        end
+      
+        if !params.has_key?(:sort)
+          params[:sort] = session[:sort]
+        end
+        
+        if !params.has_key?(:ratings)
+          params[:ratings] = @all_ratings.each_with_object({}) {|rating, h| h[rating] = '1'}
+        end
+        
+        if !params.has_key?(:sort)
+          params[:sort] = sort_column
+        end
+        
+        flash.keep
+        redirect_to movies_path(:ratings => params[:ratings], :sort => params[:sort]) and return
+      end
       
       def sort_column
         Movie.column_names.include?(params[:sort]) ? params[:sort] : "title"
