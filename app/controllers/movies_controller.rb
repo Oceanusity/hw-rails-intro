@@ -10,18 +10,30 @@ class MoviesController < ApplicationController
       @movies = Movie.all
       # load the @all_ratings from the movie class every time
       @all_ratings = Movie.all_ratings
-
+      
+      def sort_column
+        Movie.column_names.include?(params[:sort]) ? params[:sort] : "title"
+      end
+      
+      def sort_direction
+        %w[ASC DESC].include?(params[:direction]) ? params[:direction] : "ASC"
+      end
+      
       if params.has_key?(:ratings) and params.has_key?(:sort)
         session[:ratings] = params[:ratings]
         session[:sort] = params[:sort]
       else
 
         if !params.has_key?(:ratings)
-          params[:ratings] = session[:ratings]
+          if session.has_key?(:ratings)
+            params[:ratings] = session[:ratings]
+          end
         end
       
         if !params.has_key?(:sort)
-          params[:sort] = session[:sort]
+          if session.has_key?(:sort)
+            params[:sort] = session[:sort]
+          end
         end
         
         if !params.has_key?(:ratings)
@@ -34,14 +46,6 @@ class MoviesController < ApplicationController
         
         flash.keep
         redirect_to movies_path(:ratings => params[:ratings], :sort => params[:sort]) and return
-      end
-      
-      def sort_column
-        Movie.column_names.include?(params[:sort]) ? params[:sort] : "title"
-      end
-      
-      def sort_direction
-        %w[ASC DESC].include?(params[:direction]) ? params[:direction] : "ASC"
       end
       
       if session[:ratings]
