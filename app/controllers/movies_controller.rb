@@ -7,6 +7,23 @@ class MoviesController < ApplicationController
     end
   
     def index
+      
+      # replace these code refreshing same method 
+      if params[:ratings] != session[:ratings] and params[:rating] != :nil
+        session[:ratings] = params[:ratings]
+      end
+      if params[:sort] != session[:sort] and params[:sort] != :nil
+        session[:sort] = params[:sort]
+      end
+      if params[:direction] != session[:direction] and params[:direction] != :nil
+        session[:direction] = params[:direction]
+      end
+      
+      params[:ratings] = session[:ratings]
+      params[:direction] = session[:direction]
+      params[:sort] = session[:sort]
+      #
+      
       @movies = Movie.all
       # load the @all_ratings from the movie class every time
       @all_ratings = @movies.map(&:rating).uniq
@@ -23,12 +40,16 @@ class MoviesController < ApplicationController
         @fliter_keys = params[:ratings].keys
         @movies = @movies.where('rating in (?)', @fliter_keys)
         # strange not work?
-        # @movies = @movies.select { |movie| movie.rating in @filted_rating }
+        # @movies = @movies.select { |movie| @filted_rating.include?movie.rating}
       end
 
       # I am not fully understand the parameters of the order method 
-      @movies = @movies.order(sort_column + ' ' + sort_direction)  
-      
+      @movies = @movies.order(sort_column + ' ' + sort_direction)
+      if sort_column == "title"
+        @sort_title = "p-3 mb-2 bg-warning text-dark hlite"
+      elsif sort_column == "release_date"
+        @sort_release_date = 'p-3 mb-2 bg-warning text-dark hilite'
+      end
     end
   
     def new
